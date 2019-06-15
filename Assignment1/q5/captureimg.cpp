@@ -58,7 +58,9 @@ int main(int argc, char **argv)
         printf("Could not open or find the refernece starting image\n");
         exit(-1);
     }
+	//Resolution Adjustment
 	cv::resize(basicimage,basicimage,size,0,0,INTER_LINEAR);	
+	//Add Borders
 	up= 4;
 	down=4;
 	side_left=4;
@@ -73,7 +75,8 @@ int main(int argc, char **argv)
 	uchar green = changeInt.val[1];
 	uchar red = changeInt.val[2];
 	*/
-	
+		//Adding a cross-hairs down, by changing the pixel intensity in the image. 
+		//The order is BGR i.e. 0- blue, 1 is red, 2 is green
 		editImage.at<Vec3b>(122,91)[0]=0;
 		editImage.at<Vec3b>(122,91)[1]=255;
 		editImage.at<Vec3b>(122,91)[2]=255;
@@ -108,7 +111,8 @@ int main(int argc, char **argv)
         // Write a zero value into the image buffer
         //
         basicimageImg.imageData[frameCnt] = (unsigned char)0;
-	 imshow("Original", basicimage);
+	//Show the original and the annotated image 
+	imshow("Original", basicimage);
         imshow("Edit", editImage);  
 	// imshow("Edit1", src1);  
 
