@@ -73,19 +73,24 @@ int main(int argc, char **argv)
 	uchar green = changeInt.val[1];
 	uchar red = changeInt.val[2];
 	*/
-	for(int i=82;i<=102;i++)
-	{
-		editImage.at<Vec3b>(122,i)[0]=0;
-		editImage.at<Vec3b>(122,i)[1]=255;
-		editImage.at<Vec3b>(122,i)[2]=255;
-	}	
-	for(int j=112;j<=132;j++)
-	{	
-		editImage.at<Vec3b>(j,92)[0]=0;
-		editImage.at<Vec3b>(j,92)[1]=255;
-		editImage.at<Vec3b>(j,92)[2]=255;
+	
+		editImage.at<Vec3b>(122,91)[0]=0;
+		editImage.at<Vec3b>(122,91)[1]=255;
+		editImage.at<Vec3b>(122,91)[2]=255;
 		
-	}	
+		editImage.at<Vec3b>(122,93)[0]=0;
+		editImage.at<Vec3b>(122,93)[1]=255;
+		editImage.at<Vec3b>(122,93)[2]=255;
+		
+		editImage.at<Vec3b>(121,92)[0]=0;
+		editImage.at<Vec3b>(121,92)[1]=255;
+		editImage.at<Vec3b>(121,92)[2]=255;
+		
+		editImage.at<Vec3b>(123,92)[0]=0;
+		editImage.at<Vec3b>(123,92)[1]=255;
+		editImage.at<Vec3b>(123,92)[2]=255;
+		
+		
 	
 	cout << "Width : " << basicimage.cols << endl;
 	cout << "Height: " << basicimage.rows << endl;
