@@ -1,3 +1,10 @@
+/*------------------------
+* Code edited and referred
+* from OpenCV webiste
+ -------------------------*/
+
+
+
 #include "canny.h"
 #include<opencv2/core/core.hpp>
 #include<opencv2/highgui/highgui.hpp>
