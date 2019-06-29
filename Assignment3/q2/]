@@ -1,0 +1,65 @@
+#include <iostream>
+
+#include "opencv2/imgproc.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/highgui.hpp"
+
+#define MAX_KERNEL_LENGTH 31
+
+using namespace cv;
+using namespace std;
+
+Mat org_img;
+Mat src;
+Mat bgr_img[3];
+Mat G_img;
+Mat gry_img;
+Mat mod_img;
+char window_name[]= "Median Filter G band";
+
+int main(int argc, char **argv)
+{
+	namedWindow(window_name,WINDOW_AUTOSIZE);
+
+	const char* filename =argc >=2 ? argv[1] : "image45.ppm";
+	org_img=imread(filename,CV_LOAD_IMAGE_COLOR);
+	vector<Mat> brg_img(3);
+	/**/
+	split(org_img,bgr_img);
+
+	G_img=bgr_img[3];
+//	gry_img =Mat::zeros(G_img.rows,G_img.cols, CV_8UC1);
+
+ /*	for (int i=0; i<G_img.cols ; i++)
+	{
+		for (int j=0 ; j<G_img.rows ; j++)
+ 		{
+			Vec3b color1 = G_img.at<Vec3b>(Point(i,j));
+			Scalar color2 = gry_img.at<uchar>(Point(i,j));
+      			color2 = color1.val[1];
+
+   			gry_img.at<uchar>(Point(i,j)) = color2.val[0];
+  		}
+ 	}*/
+	imwrite("green_img.ppm",G_img);
+//	cvtColor(G_img,gry_img,CV_BGR2GRAY);
+	
+	if(org_img.empty())
+	{
+		printf("Error opening image\n");
+		return -1;
+	}
+
+	for ( int i = 1; i < MAX_KERNEL_LENGTH; i = i + 2 )
+    	{
+        medianBlur ( G_img, mod_img, i );
+    	}	
+	
+	imshow("Original",org_img);
+	imshow("G image",G_img);
+	//imshow("gray for G image",gry_img);
+	imshow(window_name,mod_img);
+	
+	waitKey(0);
+	return 0;
+}
