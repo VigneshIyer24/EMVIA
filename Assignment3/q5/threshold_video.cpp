@@ -53,7 +53,13 @@ int main( int argc, char** argv )
 
     	}
 
-*/	    split(mat_frame,mat_bgr);
+*/	
+	/*----------------------------------------
+	 * Split used to get all the three B, 
+	 * G , R components.The output is always
+	 * a grayscale image
+	 ----------------------------------------*/
+	    split(mat_frame,mat_bgr);
 	    //imshow("Original",mat_frame);
 	    //imshow("Green_Grayscale",mat_bgr[1]);
 
@@ -64,9 +70,13 @@ int main( int argc, char** argv )
 	threshold( mod_img, COM_detect, 25,255,THRESH_BINARY ); 
 	// find moments of the image
 	Moments m = moments(COM_detect,true);
+	
+	//Define the centroid coordinates
+	    
 	Point p(m.m10/m.m00, m.m01/m.m00);
  	X=m.m10/m.m00;
 	Y=m.m01/m.m00;
+	
 	// coordinates of the centroid
 	cout<< "The Centroid = ";
 	cout << X ;
