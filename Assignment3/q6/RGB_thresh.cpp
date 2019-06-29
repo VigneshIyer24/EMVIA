@@ -3,7 +3,10 @@
  *  Example by Sam Siewert 
  *
  *  Updated 12/6/18 for OpenCV 3.1
- *
+ * This code uses frame differencing 
+ * for background elemination and uses
+ * moments to track the centroid and 
+ * uchar to edit pixel values of the frame.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,6 +87,8 @@ int main( int argc, char** argv )
 	threshold( mat_diff, COM_detect, 200,255,THRESH_BINARY ); 
 	// find moments of the image
 	Moments m = moments(COM_detect,true);
+	   
+	//Define Centroids
 	Point p(m.m10/m.m00, m.m01/m.m00);
  	X=m.m10/m.m00;
 	Y=m.m01/m.m00;
@@ -92,7 +97,11 @@ int main( int argc, char** argv )
 	cout << X ;
 	cout << ",";
 	cout << Y << endl;	
-	// Draw cross-hairs
+	/*------------------------------------
+	 * Draw cross-hairs. uchar is used 
+	 * since the image is a grayscale map
+	 *-----------------------------------*/
+	    
  	for(int i=1;i<4;i++)
 	{
 	/*	med_frame.at<Vec3b>(Y,X-i)[0]=255;
