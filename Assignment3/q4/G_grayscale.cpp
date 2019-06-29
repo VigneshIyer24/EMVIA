@@ -47,7 +47,11 @@ int main( int argc, char** argv )
         break;
 
     	}
-
+	/*----------------------------------------
+	 * Split used to get all the three B, 
+	 * G , R components.The output is always
+	 * a grayscale image
+	 ----------------------------------------*/
 	    split(mat_frame,mat_bgr);
 	    imshow("Original",mat_frame);
 	    imshow("Green_Grayscale",mat_bgr[1]);
