@@ -1,3 +1,14 @@
+/**
+ *@file: skeletal_algo.cpp
+ *   
+ *@description: cpp code that performs background subtaction and then uses neighbouring
+ *		comparison to get a skeletal image output
+ *
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
+ *
+ *@Date: 07/13/2019
+ */
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,32 +75,43 @@ int main( int argc, char** argv )
 			break;
 			
 		}
-			
+		/*---------------------------------------------
+		 * Frame differencing is used for background
+		 * elimination  adn stores in mat_gray so can
+		 * be directly converted to binary format
+		 *---------------------------------------------*/
+		
 		cv::cvtColor(mat_frame, mat_gray, CV_BGR2GRAY);
 		absdiff(mat_gray_prev, mat_gray, mat_diff);
 
-			// worst case sum is resolution * 255
-		diffsum = (unsigned int)cv::sum(mat_diff)[0]; // single channel sum
+			/* worst case sum is resolution * 255*/
+		diffsum = (unsigned int)cv::sum(mat_diff)[0]; /* single channel sum*/
 
 		percent_diff = ((double)diffsum / (double)maxdiff)*100.0;
 
-		//printf("percent diff=%lf\n", percent_diff);
+		
 		sprintf(difftext, "%8d",  diffsum);
 
 		// tested in ERAU Jetson lab
 		if(percent_diff > 0.5) cv::putText(mat_diff, difftext, cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200,200,250), 1, CV_AA);
 		threshold(mat_gray, binary, 70, 255, CV_THRESH_BINARY);
 	 	binary = 255 - binary;
-		//	imshow("Binary",binary);
-		//	waitKey();
+		
 		
 		medianBlur(binary, mfblur, 1);
-	//	imshow("Binary",binary);
+
 		skeletal_thinning(mfblur);
-//		imshow("skeleton", binary);
+		
+		/*--------------------------------------------
+	 	* Converting the frames to images and saving
+	 	* them in a .ppm format to be later converted
+	 	* to a video stream
+	 	* -------------------------------------------*/
 		sprintf(fileppm,"images/image%04d.ppm",frames);
 		imwrite(fileppm,mfblur);
+		
 		frames++;
+		
 		if(frames==300)
 			break;
 		char c = cvWaitKey(33);
@@ -100,6 +122,12 @@ int main( int argc, char** argv )
 
 
 };
+/*--------------------------------------------
+ * This function takes input as a Mat frame
+ * and compares the neighbouring pixels in
+ * a sequential way for thinning of the images
+ * and the output is displayed in the end
+ *--------------------------------------------*/
 
 void skeletal_thinning(Mat image_bin)
 {
