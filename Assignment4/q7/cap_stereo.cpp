@@ -1,17 +1,12 @@
-/*:mple by Sam Siewert  - modified for dual USB Camera capture
+/**
+ *@file: cap_stereo.cpp
+ *   
+ *@description: cpp code that finds disparty between left and right images
+ * run: ./cap_stereo 0 1
  *
- *  NOTE: Uncompressed YUV at 640x480 for 2 cameras is likely to exceed
- *        your USB 2.0 bandwidth available.  The calculation is:
- *        2 cameras x 640 x 480 x 2 bytes_per_pixel x 30 Hz = 36000 KBytes/sec
- *        
- *        About 370 Mbps (assuming 8b/10b link encoding), and USB 2.0 is 480
- *        Mbps at line rate with no overhead.
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
  *
- *        So, for full performance, drop resolution down to 320x240.
- *
- *        I tested with really old Logitech C200 and newer C270 webcams, both are well
- *        supported and tested with the Linux UVC driver - http://www.ideasonboard.org/uvc
- *
+ *@Date: 07/13/2019
  */
 #include <unistd.h>
 #include <stdio.h>
@@ -89,17 +84,16 @@ int main( int argc, char** argv )
         cvSetCaptureProperty(capture_r, CV_CAP_PROP_FRAME_WIDTH, HRES_COLS);
         cvSetCaptureProperty(capture_r, CV_CAP_PROP_FRAME_HEIGHT, VRES_ROWS);
 
-        // set parameters for disparity
+        /*---------------------------------
+	 * set parameters for disparity using
+	 * min disparity, sobel filter etc.
+	 *----------------------------------*/
+	    
         myStereoVar->setSmallerBlockSize(3);
         myStereoVar->setMinDisparity(-16);
         myStereoVar->setNumDisparities(16);
         myStereoVar->setUniquenessRatio(3);
-       /* myStereoVar.poly_sigma = 0.0;
-        myStereoVar.fi = 15.0f;
-        myStereoVar.lambda = 0.03f;
-        myStereoVar.penalization = myStereoVar.PENALIZATION_TICHONOV;
-        myStereoVar.cycle = myStereoVar.CYCLE_V;
-       */ myStereoVar->setPreFilterType(1);
+        myStereoVar->setPreFilterType(1);
 
 
         cvNamedWindow("Capture LEFT", CV_WINDOW_AUTOSIZE);
@@ -114,6 +108,12 @@ int main( int argc, char** argv )
 	    Mat fr_r(cvarrToMat(frame_r)); 
 	    cvtColor(fr_l,f_l,CV_BGR2GRAY);
 	    cvtColor(fr_r,f_r,CV_BGR2GRAY);
+	    /*----------------------------------
+	     * The compute variable for StereoBM
+	     *  accepts images of type CV_8UC1
+	     * thus converted to grayscale for
+	     * computation
+	     *-----------------------------------*/
             myStereoVar->compute(f_l, f_r, disp);
  
             if(!frame_l) break;
@@ -130,7 +130,12 @@ int main( int argc, char** argv )
                 curr_frame_time_r=((double)frame_time_r.tv_sec * 1000.0) + 
                                   ((double)((double)frame_time_r.tv_nsec / 1000000.0));
             }
-
+	    /*--------------------------
+	     *  Displaying the grayscale
+	     *  to understand the depth 
+	     * difference
+	     *--------------------------*/
+		
             imshow("Capture LEFT", f_l);
             imshow("Capture RIGHT", f_r);
             imshow("Capture DISPARITY", disp);
@@ -140,6 +145,10 @@ int main( int argc, char** argv )
 
 
             // Set to pace frame display and capture rate
+           /*---------------------------------------------
+	    * Saving image using the timestamp for saving 
+	    * format for both left and right image
+	    *--------------------------------------------*/
             char c = cvWaitKey(10);
             if( c == ESC_KEY )
             {
