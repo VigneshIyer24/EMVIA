@@ -1,3 +1,13 @@
+/**
+ *@file: detector_extractor_matcher.cpp
+ *   
+ *@description: cpp code that detects straight lines using Canny edge and 
+ *              Hough Transform
+ *
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
+ *
+ *@Date: 07/13/2019
+ */
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
@@ -28,7 +38,12 @@ int main(int argc, char** argv)
  Mat dst, cdst;
  Canny(src, dst, 50, 200, 3);
  cvtColor(dst, cdst, CV_GRAY2BGR);
-
+/*-----------------------------------------
+ * Detect the lines using the APIs given
+ * and detecting straight lines and curves 
+ * in  given image
+ *-----------------------------------------*/
+ 
  #if 0
   vector<Vec2f> lines;
   HoughLines(dst, lines, 1, CV_PI/180, 100, 0, 0 );
