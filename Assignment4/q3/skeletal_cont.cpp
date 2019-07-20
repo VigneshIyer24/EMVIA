@@ -1,7 +1,12 @@
-/*
+    
+/**
+ *@file: skeletal_cont.cpp
+ *   
+ *@description: cpp code that performs skeletal transform
  *
- *  Example by Sam Siewert 
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
  *
+ *@Date: 07/13/2019
  */
 #include <unistd.h>
 #include <stdio.h>
@@ -34,7 +39,7 @@ int main( int argc, char** argv )
      	
         	if(!frame) break;
 		Mat src(cvarrToMat(frame));
-	//	Mat src= imread(mat_frame,CV_LOAD_IMAGE_COLOR);
+	
 		if(src.empty())
  		{
      			cout << "can not open video" << endl;
@@ -42,15 +47,13 @@ int main( int argc, char** argv )
  		}
 
 
-  //      	cvShowImage("Orignal Image", frame);
-//		waitKey();
+ 
  	
 		cvtColor(src, gray, CV_BGR2GRAY);
 	
 		threshold(gray, binary, 70, 255, CV_THRESH_BINARY);
  		binary = 255 - binary;
-//		imshow("Binary",binary);
-//		waitKey();
+
 	
 		medianBlur(binary, mfblur, 1);
 		Mat skel(mfblur.size(), CV_8UC1, Scalar(0));
@@ -59,7 +62,11 @@ int main( int argc, char** argv )
  		Mat element = getStructuringElement(MORPH_CROSS, Size(3, 3));
  		bool done;
  		int iterations=0;
-
+		/*----------------------------------------------
+		 *This loop performs the skeletal transform for
+		 * a binary image 
+		 * ----------------------------------------------*/
+		 
  		do
  		{
    			erode(mfblur, eroded, element);
@@ -76,6 +83,13 @@ int main( int argc, char** argv )
  		cout << "iterations=" << iterations << endl;
 
  		imshow("skeleton", mat_diff);
+		
+		/*---------------------------------------------
+		 * Frame differencing is used for background
+		 * elimination  adn stores in mat_gray so can
+		 * be directly converted to binary format
+		 *---------------------------------------------*/
+		
 		sprintf(fileppm,"images/image%04d.ppm",frames);
 		imwrite(fileppm,skel);
 		frames++;
