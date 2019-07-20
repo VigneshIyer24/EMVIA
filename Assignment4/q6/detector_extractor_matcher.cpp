@@ -1,3 +1,12 @@
+/**
+ *@file: detector_extractor_matcher.cpp
+ *   
+ *@description: cpp code that extracts features comparing two images
+ *
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
+ *
+ *@Date: 07/13/2019
+ */
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -43,7 +52,12 @@ void help(char** argv)
 const string winName = "correspondences";
 
 enum { NONE_FILTER = 0, CROSS_CHECK_FILTER = 1 };
-
+/*----------------------------------------------
+ * The input are two images and the features are
+ * these are chekced for maxima and minima of the 
+ * images and done more than once for the same
+ *  to eliminate all the other points
+ *----------------------------------------------*/
 int getMatcherFilterType( const string& str )
 {
     if( str == "NoneFilter" )
@@ -107,6 +121,13 @@ void warpPerspectiveRand( const Mat& src, Mat& dst, Mat& H, RNG& rng )
 
     warpPerspective( src, dst, H, src.size() );
 }
+/*---------------------------------------------------
+ * This function checks for the keypoints and finding
+ * true positives by iterations and if more than 3 
+ * features match then the keypoint is stored and
+ * sent to the database for comparison
+ * Inputs :Both frames, keypoints, extractor
+ *----------------------------------------------------*/
 
 void doIteration( const Mat& img1, Mat& img2, bool isWarpPerspective,
                   vector<KeyPoint>& keypoints1, const Mat& descriptors1,
