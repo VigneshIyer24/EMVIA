@@ -1,7 +1,11 @@
-/*
+/**
+ *@file: skeletal_cont.cpp
+ *   
+ *@description: cpp code that skeletal transform using the APIs
  *
- *  Example by Sam Siewert 
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
  *
+ *@Date: 07/13/2019
  */
 #include <unistd.h>
 #include <stdio.h>
