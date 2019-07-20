@@ -1,11 +1,7 @@
-/**
- *@file: skeletal_cont.cpp
- *   
- *@description: cpp code that skeletal transform using the APIs
+/*
  *
- *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
+ *  Example by Sam Siewert 
  *
- *@Date: 07/13/2019
  */
 #include <unistd.h>
 #include <stdio.h>
@@ -22,6 +18,8 @@
 using namespace cv;
 using namespace std;
 
+char fileppm[50];
+int frames=1;
 
 int main( int argc, char** argv )
 {
@@ -44,14 +42,14 @@ int main( int argc, char** argv )
  		}
 
 
-        	cvShowImage("Orignal Image", frame);
+  //      	cvShowImage("Orignal Image", frame);
 //		waitKey();
  	
 		cvtColor(src, gray, CV_BGR2GRAY);
 	
 		threshold(gray, binary, 70, 255, CV_THRESH_BINARY);
  		binary = 255 - binary;
-		imshow("Binary",binary);
+//		imshow("Binary",binary);
 //		waitKey();
 	
 		medianBlur(binary, mfblur, 1);
@@ -77,11 +75,15 @@ int main( int argc, char** argv )
 
  		cout << "iterations=" << iterations << endl;
 
- 		imshow("skeleton", skel);
-
-        	char c = cvWaitKey(33);
+ 		imshow("skeleton", mat_diff);
+		sprintf(fileppm,"images/image%04d.ppm",frames);
+		imwrite(fileppm,skel);
+		frames++;
+		if(frames==3000)
+			break;
+		char c = cvWaitKey(33);
         	if( c == 27 ) break;
-    	}
+	}
 
     	cvReleaseCapture(&capture);
     	cvDestroyWindow("Capture Example");
