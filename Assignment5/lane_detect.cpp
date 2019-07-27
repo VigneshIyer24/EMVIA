@@ -1,3 +1,14 @@
+/**
+ *@file: cap_stereo.cpp
+ *   
+ *@description: cpp code that finds disparty between left and right images
+ * run: ./cap_stereo 0 1
+ *
+ *@Author: Code written by Vignesh Iyer based on code written by Prof. Sam Siewert
+ *
+ *@Date: 07/13/2019
+ */
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -17,8 +28,19 @@ char fileppm[50];
 int frames=1;
 // create a vector to store points of line
 vector<Vec4i> lines;
-
-void onTrackbarChange( int , void* )
+/*-------------------------------------------------------------------
+ *@Function: void TrackDetect
+ *@Input: int, void pointer
+ *@Function: This function takes input as a frame and uses the 
+             Canny for edge Detection and then uses the Hough Lines
+	     to detect the lines for lane and the values as well
+	     threshold have been taken on basis of trail and error.
+	     Further to be improved using Guassian Blur for 
+	     smoothening the images and exact detection using a 
+	     binary mask by conversionfrom gray to binary image.
+	     Then applying Hough Lines.
+*-------------------------------------------------------------------*/
+void TrackDetect( int , void* )
 { 
   	cimg = img.clone();
   	dst = img.clone();
@@ -31,30 +53,24 @@ void onTrackbarChange( int , void* )
   	// apply hough line transform
   	HoughLinesP(edges, lines, 1, CV_PI/180, 50, 50, 150);
 
-  	// draw lines on the detected points
+  	/*-----------------------------------------------
+	 * Draw lines on the detected points. Creating
+	 * new Vec4i because values also need to be 
+	 * stored
+	 *----------------------------------------------*/
    	for( size_t i = 0; i < lines.size(); i++ )
     	{
         	Vec4i l = lines[i];
         	line( dst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 1, LINE_AA);
     	}
    
-   	// show the resultant image
-   //	imshow("Result Image", dst);
-   //	imshow("Edges", edges);
+ 
 }
 
 int main(int argc, char** argv) 
 {  
 	VideoCapture cap("1.mp4" );
-  	// Read image (color mode)
-  /*	img = imread(file, 1);
-  	dst = img.clone();
-
-  	if(img.empty())
-  	{
-    		cout << "Error in reading image" << file<< endl;
-    		return -1;
-  	}*/
+  
   	while(1)
   	{
   		cap >>img;
@@ -66,26 +82,32 @@ int main(int argc, char** argv)
                 	break;
         	}
 
-		// Convert to gray-scale
+		/*-----------------------
+		 * Convert to gray-scale
+		 *----------------------*/
   		cvtColor(img, gray, COLOR_BGR2GRAY);
 
-  		// Detect edges using Canny Edge Detector
-  		// Canny(gray, dst, 50, 200, 3);
-  
-  		// Make a copy of original image
-  		// cimg = img.clone();
+  		
 
-  		// Will hold the results of the detection
+  		
   		namedWindow("Edges",1);
   		namedWindow("Result Image", 1);
  
-  		// Declare thresh to vary the max_radius of circles to be detected in hough transform
   		initThresh = 500;
 
-  		// Create trackbar to change threshold values
- 		createTrackbar("threshold", "Result Image", &initThresh, maxThresh, onTrackbarChange);
+  		/*---------------------------------------------------------------
+		 * Create trackbar to change threshold values which takes input 
+		 * as the threshold, window name, threshold values
+		 *---------------------------------------------------------------*/
+ 		createTrackbar("threshold", "Result Image", &initThresh, maxThresh, TrackDetect);
   		onTrackbarChange(initThresh, 0);
-
+		
+		/*--------------------------------------------
+	 	* Converting the frames to images and saving
+	 	* them in a .ppm format to be later converted
+	 	* to a video stream
+	 	* -------------------------------------------*/
+		
 		sprintf(fileppm,"images/image%04d.ppm",frames);
 		imwrite(fileppm,dst);
 		frames++;
