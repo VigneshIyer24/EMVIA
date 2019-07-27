@@ -69,6 +69,12 @@ void TrackDetect( int , void* )
 
 int main(int argc, char** argv) 
 {  
+	/*--------------------------------------
+	 * Captured Video is pre-recorded
+	 * video given in the same folder.
+	 * Further work for higher size videos
+	 * is being done.
+	 *-------------------------------------*/
 	VideoCapture cap("1.mp4" );
   
   	while(1)
